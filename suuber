@@ -1,0 +1,77 @@
+<?php
+							// Traverse array and print employee data
+							foreach ($user_data as $user) { 
+								reset($user->rating);
+								$totalRatings = current($user->rating); //the first one
+								end($user->rating);echo "<br />";
+								$averageRating = current($user->rating);//the second one
+					
+							?>
+							<li class="item ng-star-inserted">
+								<a href="<?php echo "https://demo7.1stopwebsitesolution.com/suuber/cleaner-details/".$user->id; ?>" class="for_check">
+									<div class="search-item-image">
+										<img src="<?php echo $user->profile_picture; ?>" class="ng-star-inserted"><!----><!---->
+									</div>
+									<div class="item-description cleaner-description pb-2">
+									    <!--<button tooltipposition="top" class="mark-icon grey fav_btn " data-id="<?php //echo $user->id; ?>">&nbsp; </button>-->
+									       
+									<div class="left-desc">
+										<div class="name-cr">
+											<h4 class="item-name cleaner-name"><?php echo $user->name; ?></h4>
+											<?php  if($user->criminal_file_verified){ ?> 
+											<div tooltipposition="top" class="criminal-record-green ng-star-inserted"></div>
+											<?php }?>
+										</div>
+										<p class="location-icon small-before-icon"> <?php echo $user->address; ?></p>
+										<p class="small-before-icon distance-location"><?php echo $user->distance; ?> km</p>
+										<p class="pet-icon">
+											<?php	$pets = $user->pets;
+								if ($pets === true){
+									$pet_value= "pets okay"; ?>
+											<span class="mdi mdi-paw"></span> <?php echo $pet_value; ?> <span class="pet-not-okay ng-star-inserted">✅<span class="mdi mdi-close"></span></span>
+											<?php } 
+								else {
+									$pet_value= "pets not okay"; ?>
+											<span class="mdi mdi-paw"></span> <?php echo $pet_value; ?> <span class="pet-not-okay ng-star-inserted"><span class="mdi mdi-close">❌</span></span>
+											<?php } ?>	
+										</p>
+										<custom-click-rating>
+											<div class="average-rating small-sized-rating">
+												<span class="average-rating-value"><?php echo $averageRating; ?></span>
+												<div class="rating-item ng-star-inserted"><span class="star-masked" style="width: 0%;"> ★ </span> ★ </div>
+												<div class="rating-item ng-star-inserted"><span class="star-masked" style="width: 0%;"> ★ </span> ★ </div>
+												<div class="rating-item ng-star-inserted"><span class="star-masked" style="width: 0%;"> ★ </span> ★ </div>
+												<div class="rating-item ng-star-inserted"><span class="star-masked" style="width: 0%;"> ★ </span> ★ </div>
+												<div class="rating-item ng-star-inserted"><span class="star-masked" style="width: 0%;"> ★ </span> ★ </div>
+												<span class="total-reviews"><?php echo $totalRatings; ?> Review </span>
+											</div>
+										</custom-click-rating>
+										<br>				
+										<?php foreach($user->services as $service){ ?>
+										<p class="job-category ng-star-inserted"> <?php echo $service ?> </p>
+										<?php } ?>
+										<p class="item-short-description">  </p>
+									</div>
+									<div class="right-desc text-right">
+										<div class="working-hour-wage small-before-icon money-icon pull-right net_gross_wage">
+											<div><span class="value"><?php echo $user->price_per_hour; ?></span><span class="unit">CHF/h</span><span class="wage__label net">(Net salary)</span></div>
+											<div class="tool_tip"><span class="value"><?php echo $user->total_price_per_hour; ?></span><span class="unit">CHF/h</span><span class="wage__label net">(Total cost)</span>
+										    <div class="toop_ui-overlaypanel">
+                                                    <ul>
+                                                        <li>AHV / IV / EO = 10.55%</li>
+                                                        <li>VAT = 2.20%</li>
+                                                        <li>FAK: 1.2% -3.5% (according to canton)</li>
+                                                        <li>AHV administration costs 5% of the AHV amount</li>
+                                                        <li>Accident insurance: CHF 0.60</li>
+                                                        <li>KTG: CHF 0.75</li>
+                                                        <li>Liability: CHF 0.75</li>
+                                                        <li>Servicefee CHF 1.40</li>
+                                                        </ul>
+                                                </div>
+										
+										</div>
+										</div>
+										<a href="javascript:void (0);" class="view-page"></a></div><div class="bottom__buttons"><p class="posted-time">Last login: <?php echo $user->last_login; ?></p><!----></div></div>
+								</a>
+							</li>
+							<?php } ?>
