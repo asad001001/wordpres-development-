@@ -32,6 +32,7 @@
 											<?php } 
 								else {
 									$pet_value= "pets not okay"; ?>
+
 											<span class="mdi mdi-paw"></span> <?php echo $pet_value; ?> <span class="pet-not-okay ng-star-inserted"><span class="mdi mdi-close">❌</span></span>
 											<?php } ?>	
 										</p>
