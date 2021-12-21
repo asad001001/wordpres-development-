@@ -75,3 +75,76 @@
 								</a>
 							</li>
 							<?php } ?>
+
+
+
+// jobs
+
+
+
+	<ul class="list-items">
+							<?php
+							// Traverse array and print employee data
+							$itration = 1;
+							
+							foreach ($user_data as $user) { 
+							
+							?>
+						        <li class="item search-job__items ng-star-inserted <?php echo (($itration <= 10 )? "active" : " " ); $itration++; ?>">
+						            <a href="">
+						                <div class="job-image search-item-image"><!---->
+						                    <img alt="no image found" src="<?php echo $user->image; ?>" class="ng-star-inserted">
+						                </div>
+						                <div class="job-description item-description">
+						                    <div class="left-desc">
+											
+						                      
+						                        <a  href="">
+						                            <h4 class="job-name item-name"><?php echo $user->description; ?></h4>
+						                        </a>
+						                        <p class="posted-job-date date-time-icon small-before-icon"><?php echo  $user->posted_at; ?></p>
+						                        <p class="posted-job-location location-icon small-before-icon"><?php echo $user->city; ?></p>
+						                        <p class="posted-job-date frequency small-before-icon"><?php echo $user->frequency; ?></p>
+						                        <p class="posted-job-date last-login small-before-icon"><?php //echo $user["city"]; ?> last login</p>
+						                        <p class="small-before-icon distance-location"><?php echo $user->distance; ?> km</p>
+						                        
+						                        <?php foreach($user->services as $items){
+						                        ?> 
+						                        <p class="job-category ng-star-inserted"><?php echo $items; ?></p>
+						                        <?php } ?>
+						                       <p class="job-short-description item-short-description"><?php echo $user->description; ?> </p>
+						                    </div>
+						                  <div class="right-desc">
+						                     <!-- <a href="javascript:;void(0)" title="Mark this job" tooltipposition="top" class="mark-target-job grey mark-icon hidden-xs favrten">-->
+						                     <!--     <div class="ui-tooltip ui-widget ui-tooltip-top" style="display: inline-block;right: -62px;top: -30px;opacity: 1.048;z-index: 1001;width: 154px;text-align: center;">-->
+                    							<!--<div class="ui-tooltip-arrow"></div>-->
+                    							<!--<div class="ui-tooltip-text ui-shadow ui-corner-all">Zu Favoriten hinzuf端gen</div>-->
+                    							<!--</div>-->
+						                          
+						                     <!-- </a>-->
+											  
+						                      <div class="text-center bottom-content search-job__bottom-content">
+						                          <div class="working-hour-wage small-before-icon money-icon">
+						                              <span class="value"><?php echo $user->price_per_hour; ?></span>
+						                              <span class="unit">CHF/h</span>
+						                          </div>
+						                      </div>
+						                  </div>
+						                  <div class="bottom__buttons">
+						                      <div class="posted-time"><?php 
+						                      
+						                      $date1=date_create($user->posted_at);
+                                            $date2=date_create(date());
+                                            $diff=date_diff($date1,$date2);
+                                            echo $diff->format("Posted %a days ago");
+						                      ?></div>
+						                      <div class="ng-star-inserted">
+						                          <a href="javascript:void(0);" data-toggle="modal" data-target="#offer-modal" class="plain__button grey">Jetzt bewerben &gt;</a>
+						                          </div><!---->
+						                  </div>
+						              </div>
+						          </a>
+						      </li>
+							<?php } ?>
+						</ul>
+
