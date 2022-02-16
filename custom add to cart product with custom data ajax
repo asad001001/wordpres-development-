@@ -1,0 +1,1188 @@
+<?php
+/**
+ * Twenty Seventeen functions and definitions
+ *
+ * @link https://developer.wordpress.org/themes/basics/theme-functions/
+ *
+ * @package WordPress
+ * @subpackage Twenty_Seventeen
+ * @since Twenty Seventeen 1.0
+ */
+
+/**
+ * Twenty Seventeen only works in WordPress 4.7 or later.
+ */
+if ( version_compare( $GLOBALS['wp_version'], '4.7-alpha', '<' ) ) {
+	require get_template_directory() . '/inc/back-compat.php';
+	return;
+}
+
+/**
+ * Sets up theme defaults and registers support for various WordPress features.
+ *
+ * Note that this function is hooked into the after_setup_theme hook, which
+ * runs before the init hook. The init hook is too late for some features, such
+ * as indicating support for post thumbnails.
+ */
+function twentyseventeen_setup() {
+	/*
+	 * Make theme available for translation.
+	 * Translations can be filed at WordPress.org. See: https://translate.wordpress.org/projects/wp-themes/twentyseventeen
+	 * If you're building a theme based on Twenty Seventeen, use a find and replace
+	 * to change 'twentyseventeen' to the name of your theme in all the template files.
+	 */
+	load_theme_textdomain( 'twentyseventeen' );
+
+	// Add default posts and comments RSS feed links to head.
+	add_theme_support( 'automatic-feed-links' );
+
+	/*
+	 * Let WordPress manage the document title.
+	 * By adding theme support, we declare that this theme does not use a
+	 * hard-coded <title> tag in the document head, and expect WordPress to
+	 * provide it for us.
+	 */
+	add_theme_support( 'title-tag' );
+
+	/*
+	 * Enable support for Post Thumbnails on posts and pages.
+	 *
+	 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
+	 */
+	add_theme_support( 'post-thumbnails' );
+
+	add_image_size( 'twentyseventeen-featured-image', 2000, 1200, true );
+	add_image_size( 'home-image', 570, 570, true );
+	add_image_size( 'twentyseventeen-thumbnail-avatar', 100, 100, true );
+	add_image_size( 'product_img', 270, 400, false );
+
+	// Set the default content width.
+	$GLOBALS['content_width'] = 525;
+
+	// This theme uses wp_nav_menu() in two locations.
+	register_nav_menus(
+		array(
+			'top'    => __( 'Top Menu', 'twentyseventeen' ),
+			'footer' => __( 'Footer Menu', 'twentyseventeen' ),
+		)
+	);
+
+	/*
+	 * Switch default core markup for search form, comment form, and comments
+	 * to output valid HTML5.
+	 */
+	add_theme_support(
+		'html5',
+		array(
+			'comment-form',
+			'comment-list',
+			'gallery',
+			'caption',
+			'script',
+			'style',
+		)
+	);
+
+	/*
+	 * Enable support for Post Formats.
+	 *
+	 * See: https://wordpress.org/support/article/post-formats/
+	 */
+	add_theme_support(
+		'post-formats',
+		array(
+			'aside',
+			'image',
+			'video',
+			'quote',
+			'link',
+			'gallery',
+			'audio',
+		)
+	);
+
+	// Add theme support for Custom Logo.
+	add_theme_support(
+		'custom-logo',
+		array(
+			'width'      => 250,
+			'height'     => 250,
+			'flex-width' => true,
+		)
+	);
+
+	// Add theme support for selective refresh for widgets.
+	add_theme_support( 'customize-selective-refresh-widgets' );
+
+	/*
+	 * This theme styles the visual editor to resemble the theme style,
+	 * specifically font, colors, and column width.
+	  */
+	add_editor_style( array( 'assets/css/editor-style.css', twentyseventeen_fonts_url() ) );
+
+	// Load regular editor styles into the new block-based editor.
+	add_theme_support( 'editor-styles' );
+
+	// Load default block styles.
+	add_theme_support( 'wp-block-styles' );
+
+	// Add support for responsive embeds.
+	add_theme_support( 'responsive-embeds' );
+
+	// Define and register starter content to showcase the theme on new sites.
+	$starter_content = array(
+		'widgets'     => array(
+			// Place three core-defined widgets in the sidebar area.
+			'sidebar-1' => array(
+				'text_business_info',
+				'search',
+				'text_about',
+			),
+
+			// Add the core-defined business info widget to the footer 1 area.
+			'sidebar-2' => array(
+				'text_business_info',
+			),
+
+			// Put two core-defined widgets in the footer 2 area.
+			'sidebar-3' => array(
+				'text_about',
+				'search',
+			),
+		),
+
+		// Specify the core-defined pages to create and add custom thumbnails to some of them.
+		'posts'       => array(
+			'home',
+			'about'            => array(
+				'thumbnail' => '{{image-sandwich}}',
+			),
+			'contact'          => array(
+				'thumbnail' => '{{image-espresso}}',
+			),
+			'blog'             => array(
+				'thumbnail' => '{{image-coffee}}',
+			),
+			'homepage-section' => array(
+				'thumbnail' => '{{image-espresso}}',
+			),
+		),
+
+		// Create the custom image attachments used as post thumbnails for pages.
+		'attachments' => array(
+			'image-espresso' => array(
+				'post_title' => _x( 'Espresso', 'Theme starter content', 'twentyseventeen' ),
+				'file'       => 'assets/images/espresso.jpg', // URL relative to the template directory.
+			),
+			'image-sandwich' => array(
+				'post_title' => _x( 'Sandwich', 'Theme starter content', 'twentyseventeen' ),
+				'file'       => 'assets/images/sandwich.jpg',
+			),
+			'image-coffee'   => array(
+				'post_title' => _x( 'Coffee', 'Theme starter content', 'twentyseventeen' ),
+				'file'       => 'assets/images/coffee.jpg',
+			),
+		),
+
+		// Default to a static front page and assign the front and posts pages.
+		'options'     => array(
+			'show_on_front'  => 'page',
+			'page_on_front'  => '{{home}}',
+			'page_for_posts' => '{{blog}}',
+		),
+
+		// Set the front page section theme mods to the IDs of the core-registered pages.
+		'theme_mods'  => array(
+			'panel_1' => '{{homepage-section}}',
+			'panel_2' => '{{about}}',
+			'panel_3' => '{{blog}}',
+			'panel_4' => '{{contact}}',
+		),
+
+		// Set up nav menus for each of the two areas registered in the theme.
+		'nav_menus'   => array(
+			// Assign a menu to the "top" location.
+			'top'    => array(
+				'name'  => __( 'Top Menu', 'twentyseventeen' ),
+				'items' => array(
+					'link_home', // Note that the core "home" page is actually a link in case a static front page is not used.
+					'page_about',
+					'page_blog',
+					'page_contact',
+				),
+			),
+
+			// Assign a menu to the "social" location.
+			'social' => array(
+				'name'  => __( 'Social Links Menu', 'twentyseventeen' ),
+				'items' => array(
+					'link_yelp',
+					'link_facebook',
+					'link_twitter',
+					'link_instagram',
+					'link_email',
+				),
+			),
+		),
+	);
+
+	/**
+	 * Filters Twenty Seventeen array of starter content.
+	 *
+	 * @since Twenty Seventeen 1.1
+	 *
+	 * @param array $starter_content Array of starter content.
+	 */
+	$starter_content = apply_filters( 'twentyseventeen_starter_content', $starter_content );
+
+	add_theme_support( 'starter-content', $starter_content );
+}
+add_action( 'after_setup_theme', 'twentyseventeen_setup' );
+
+/**
+ * Set the content width in pixels, based on the theme's design and stylesheet.
+ *
+ * Priority 0 to make it available to lower priority callbacks.
+ *
+ * @global int $content_width
+ */
+function twentyseventeen_content_width() {
+
+	$content_width = $GLOBALS['content_width'];
+
+	// Get layout.
+	$page_layout = get_theme_mod( 'page_layout' );
+
+	// Check if layout is one column.
+	if ( 'one-column' === $page_layout ) {
+		if ( twentyseventeen_is_frontpage() ) {
+			$content_width = 644;
+		} elseif ( is_page() ) {
+			$content_width = 740;
+		}
+	}
+
+	// Check if is single post and there is no sidebar.
+	if ( is_single() && ! is_active_sidebar( 'sidebar-1' ) ) {
+		$content_width = 740;
+	}
+
+	/**
+	 * Filter Twenty Seventeen content width of the theme.
+	 *
+	 * @since Twenty Seventeen 1.0
+	 *
+	 * @param int $content_width Content width in pixels.
+	 */
+	$GLOBALS['content_width'] = apply_filters( 'twentyseventeen_content_width', $content_width );
+}
+add_action( 'template_redirect', 'twentyseventeen_content_width', 0 );
+
+/**
+ * Register custom fonts.
+ */
+function twentyseventeen_fonts_url() {
+	$fonts_url = '';
+
+	/*
+	 * translators: If there are characters in your language that are not supported
+	 * by Libre Franklin, translate this to 'off'. Do not translate into your own language.
+	 */
+	$libre_franklin = _x( 'on', 'Libre Franklin font: on or off', 'twentyseventeen' );
+
+	if ( 'off' !== $libre_franklin ) {
+		$font_families = array();
+
+		$font_families[] = 'Libre Franklin:300,300i,400,400i,600,600i,800,800i';
+
+		$query_args = array(
+			'family'  => urlencode( implode( '|', $font_families ) ),
+			'subset'  => urlencode( 'latin,latin-ext' ),
+			'display' => urlencode( 'fallback' ),
+		);
+
+		$fonts_url = add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
+	}
+
+	return esc_url_raw( $fonts_url );
+}
+
+/**
+ * Add preconnect for Google Fonts.
+ *
+ * @since Twenty Seventeen 1.0
+ *
+ * @param array  $urls           URLs to print for resource hints.
+ * @param string $relation_type  The relation type the URLs are printed.
+ * @return array $urls           URLs to print for resource hints.
+ */
+function twentyseventeen_resource_hints( $urls, $relation_type ) {
+	if ( wp_style_is( 'twentyseventeen-fonts', 'queue' ) && 'preconnect' === $relation_type ) {
+		$urls[] = array(
+			'href' => 'https://fonts.gstatic.com',
+			'crossorigin',
+		);
+	}
+
+	return $urls;
+}
+add_filter( 'wp_resource_hints', 'twentyseventeen_resource_hints', 10, 2 );
+
+/**
+ * Register widget area.
+ *
+ * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
+ */
+function twentyseventeen_widgets_init() {
+	register_sidebar(
+		array(
+			'name'          => __( 'Blog Sidebar', 'twentyseventeen' ),
+			'id'            => 'sidebar-1',
+			'description'   => __( 'Add widgets here to appear in your sidebar on blog posts and archive pages.', 'twentyseventeen' ),
+			'before_widget' => '<section id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2 class="widget-title">',
+			'after_title'   => '</h2>',
+		)
+	);
+
+	register_sidebar(
+		array(
+			'name'          => __( 'Footer 1', 'twentyseventeen' ),
+			'id'            => 'sidebar-2',
+			'description'   => __( 'Add widgets here to appear in your footer.', 'twentyseventeen' ),
+			'before_widget' => '<section id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2 class="widget-title">',
+			'after_title'   => '</h2>',
+		)
+	);
+
+	register_sidebar(
+		array(
+			'name'          => __( 'Footer 2', 'twentyseventeen' ),
+			'id'            => 'sidebar-3',
+			'description'   => __( 'Add widgets here to appear in your footer.', 'twentyseventeen' ),
+			'before_widget' => '<section id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2 class="widget-title">',
+			'after_title'   => '</h2>',
+		)
+	);
+}
+add_action( 'widgets_init', 'twentyseventeen_widgets_init' );
+
+/**
+ * Replaces "[...]" (appended to automatically generated excerpts) with ... and
+ * a 'Continue reading' link.
+ *
+ * @since Twenty Seventeen 1.0
+ *
+ * @param string $link Link to single post/page.
+ * @return string 'Continue reading' link prepended with an ellipsis.
+ */
+function twentyseventeen_excerpt_more( $link ) {
+	if ( is_admin() ) {
+		return $link;
+	}
+
+	$link = sprintf(
+		'<p class="link-more"><a href="%1$s" class="more-link">%2$s</a></p>',
+		esc_url( get_permalink( get_the_ID() ) ),
+		/* translators: %s: Post title. */
+		sprintf( __( 'Continue reading<span class="screen-reader-text"> "%s"</span>', 'twentyseventeen' ), get_the_title( get_the_ID() ) )
+	);
+	return ' &hellip; ' . $link;
+}
+add_filter( 'excerpt_more', 'twentyseventeen_excerpt_more' );
+
+/**
+ * Handles JavaScript detection.
+ *
+ * Adds a `js` class to the root `<html>` element when JavaScript is detected.
+ *
+ * @since Twenty Seventeen 1.0
+ */
+function twentyseventeen_javascript_detection() {
+	echo "<script>(function(html){html.className = html.className.replace(/\bno-js\b/,'js')})(document.documentElement);</script>\n";
+}
+add_action( 'wp_head', 'twentyseventeen_javascript_detection', 0 );
+
+/**
+ * Add a pingback url auto-discovery header for singularly identifiable articles.
+ */
+function twentyseventeen_pingback_header() {
+	if ( is_singular() && pings_open() ) {
+		printf( '<link rel="pingback" href="%s">' . "\n", esc_url( get_bloginfo( 'pingback_url' ) ) );
+	}
+}
+add_action( 'wp_head', 'twentyseventeen_pingback_header' );
+
+/**
+ * Display custom color CSS.
+ */
+function twentyseventeen_colors_css_wrap() {
+	if ( 'custom' !== get_theme_mod( 'colorscheme' ) && ! is_customize_preview() ) {
+		return;
+	}
+
+	require_once get_parent_theme_file_path( '/inc/color-patterns.php' );
+	$hue = absint( get_theme_mod( 'colorscheme_hue', 250 ) );
+
+	$customize_preview_data_hue = '';
+	if ( is_customize_preview() ) {
+		$customize_preview_data_hue = 'data-hue="' . $hue . '"';
+	}
+	?>
+	<style type="text/css" id="custom-theme-colors" <?php echo $customize_preview_data_hue; ?>>
+		<?php echo twentyseventeen_custom_colors_css(); ?>
+	</style>
+	<?php
+}
+add_action( 'wp_head', 'twentyseventeen_colors_css_wrap' );
+
+
+function custom_add_google_fonts() {
+	wp_enqueue_style( 'custom-google-fonts', 'https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800;900&display=swap', false );
+	}
+	add_action( 'wp_enqueue_scripts', 'custom_add_google_fonts' );
+/**
+ * Enqueues scripts and styles.
+ */
+function twentyseventeen_scripts() {
+	// Add custom fonts, used in the main stylesheet.
+	wp_enqueue_style( 'twentyseventeen-fonts', twentyseventeen_fonts_url(), array(), null );
+	wp_enqueue_style( 'allstyles', get_template_directory_uri() . '/css/allstyles.css',false,'1.1','all');
+
+	// Theme stylesheet.
+	wp_enqueue_style( 'twentyseventeen-style', get_stylesheet_uri(), array(), '20190507' );
+	wp_enqueue_style( 'atf', get_template_directory_uri() . '/css/atf.css',false,'1.1','all');
+
+	// ===================
+
+
+wp_enqueue_script( 'jquerycag', get_theme_file_uri( '/js/jquery.min.js' ), array( 'jquery' ), '1.0', true );
+wp_enqueue_script( 'pluginsall', get_theme_file_uri( '/js/plugins.js' ), array( 'jquery' ), '1.0', true );
+wp_enqueue_script( 'scriptall', get_theme_file_uri( '/js/hashe.js' ), array( 'jquery' ), '1.1', true );
+
+}
+add_action( 'wp_enqueue_scripts', 'twentyseventeen_scripts' );
+
+/**
+ * Enqueues styles for the block-based editor.
+ *
+ * @since Twenty Seventeen 1.8
+ */
+function twentyseventeen_block_editor_styles() {
+	// Block styles.
+	wp_enqueue_style( 'twentyseventeen-block-editor-style', get_theme_file_uri( '/assets/css/editor-blocks.css' ), array(), '20190328' );
+	// Add custom fonts.
+	wp_enqueue_style( 'twentyseventeen-fonts', twentyseventeen_fonts_url(), array(), null );
+}
+add_action( 'enqueue_block_editor_assets', 'twentyseventeen_block_editor_styles' );
+
+/**
+ * Add custom image sizes attribute to enhance responsive image functionality
+ * for content images.
+ *
+ * @since Twenty Seventeen 1.0
+ *
+ * @param string $sizes A source size value for use in a 'sizes' attribute.
+ * @param array  $size  Image size. Accepts an array of width and height
+ *                      values in pixels (in that order).
+ * @return string A source size value for use in a content image 'sizes' attribute.
+ */
+function twentyseventeen_content_image_sizes_attr( $sizes, $size ) {
+	$width = $size[0];
+
+	if ( 740 <= $width ) {
+		$sizes = '(max-width: 706px) 89vw, (max-width: 767px) 82vw, 740px';
+	}
+
+	if ( is_active_sidebar( 'sidebar-1' ) || is_archive() || is_search() || is_home() || is_page() ) {
+		if ( ! ( is_page() && 'one-column' === get_theme_mod( 'page_options' ) ) && 767 <= $width ) {
+			$sizes = '(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px';
+		}
+	}
+
+	return $sizes;
+}
+add_filter( 'wp_calculate_image_sizes', 'twentyseventeen_content_image_sizes_attr', 10, 2 );
+
+/**
+ * Filter the `sizes` value in the header image markup.
+ *
+ * @since Twenty Seventeen 1.0
+ *
+ * @param string $html   The HTML image tag markup being filtered.
+ * @param object $header The custom header object returned by 'get_custom_header()'.
+ * @param array  $attr   Array of the attributes for the image tag.
+ * @return string The filtered header image HTML.
+ */
+function twentyseventeen_header_image_tag( $html, $header, $attr ) {
+	if ( isset( $attr['sizes'] ) ) {
+		$html = str_replace( $attr['sizes'], '100vw', $html );
+	}
+	return $html;
+}
+add_filter( 'get_header_image_tag', 'twentyseventeen_header_image_tag', 10, 3 );
+
+/**
+ * Add custom image sizes attribute to enhance responsive image functionality
+ * for post thumbnails.
+ *
+ * @since Twenty Seventeen 1.0
+ *
+ * @param array $attr       Attributes for the image markup.
+ * @param int   $attachment Image attachment ID.
+ * @param array $size       Registered image size or flat array of height and width dimensions.
+ * @return array The filtered attributes for the image markup.
+ */
+function twentyseventeen_post_thumbnail_sizes_attr( $attr, $attachment, $size ) {
+	if ( is_archive() || is_search() || is_home() ) {
+		$attr['sizes'] = '(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px';
+	} else {
+		$attr['sizes'] = '100vw';
+	}
+
+	return $attr;
+}
+add_filter( 'wp_get_attachment_image_attributes', 'twentyseventeen_post_thumbnail_sizes_attr', 10, 3 );
+
+/**
+ * Use front-page.php when Front page displays is set to a static page.
+ *
+ * @since Twenty Seventeen 1.0
+ *
+ * @param string $template front-page.php.
+ *
+ * @return string The template to be used: blank if is_home() is true (defaults to index.php), else $template.
+ */
+function twentyseventeen_front_page_template( $template ) {
+	return is_home() ? '' : $template;
+}
+add_filter( 'frontpage_template', 'twentyseventeen_front_page_template' );
+
+/**
+ * Modifies tag cloud widget arguments to display all tags in the same font size
+ * and use list format for better accessibility.
+ *
+ * @since Twenty Seventeen 1.4
+ *
+ * @param array $args Arguments for tag cloud widget.
+ * @return array The filtered arguments for tag cloud widget.
+ */
+function twentyseventeen_widget_tag_cloud_args( $args ) {
+	$args['largest']  = 1;
+	$args['smallest'] = 1;
+	$args['unit']     = 'em';
+	$args['format']   = 'list';
+
+	return $args;
+}
+add_filter( 'widget_tag_cloud_args', 'twentyseventeen_widget_tag_cloud_args' );
+
+/**
+ * Get unique ID.
+ *
+ * This is a PHP implementation of Underscore's uniqueId method. A static variable
+ * contains an integer that is incremented with each call. This number is returned
+ * with the optional prefix. As such the returned value is not universally unique,
+ * but it is unique across the life of the PHP process.
+ *
+ * @since Twenty Seventeen 2.0
+ * @see wp_unique_id() Themes requiring WordPress 5.0.3 and greater should use this instead.
+ *
+ * @staticvar int $id_counter
+ *
+ * @param string $prefix Prefix for the returned ID.
+ * @return string Unique ID.
+ */
+function twentyseventeen_unique_id( $prefix = '' ) {
+	static $id_counter = 0;
+	if ( function_exists( 'wp_unique_id' ) ) {
+		return wp_unique_id( $prefix );
+	}
+	return $prefix . (string) ++$id_counter;
+}
+
+/**
+ * Implement the Custom Header feature.
+ */
+require get_parent_theme_file_path( '/inc/custom-header.php' );
+
+/**
+ * Custom template tags for this theme.
+ */
+require get_parent_theme_file_path( '/inc/template-tags.php' );
+
+/**
+ * Additional features to allow styling of the templates.
+ */
+require get_parent_theme_file_path( '/inc/template-functions.php' );
+
+/**
+ * Customizer additions.
+ */
+require get_parent_theme_file_path( '/inc/customizer.php' );
+
+/**
+ * SVG icons functions and filters.
+ */
+require get_parent_theme_file_path( '/inc/icon-functions.php' );
+require get_parent_theme_file_path( '/inc/woocommerce-functions.php' );
+
+
+/**
+ * Custom Posts Type
+ */
+require get_template_directory() . '/template-parts/post-type/homeslider_post_type.php';
+// require get_template_directory() . '/template-parts/post-type/register-services.php';
+// require get_template_directory() . '/template-parts/post-type/register-news.php';
+// require get_template_directory() . '/template-parts/post-type/register-events.php';
+// require get_template_directory() . '/template-parts/post-type/register-testimonials.php';
+// require get_template_directory() . '/template-parts/post-type/register-trainers.php';
+// require get_template_directory() . '/template-parts/post-type/register-team.php';
+
+	 // =============
+if( function_exists('acf_add_options_page') ) {
+ 	// add parent
+	$parent = acf_add_options_page(array(
+		'page_title' 	=> 'Theme General Settings',
+		'menu_title' 	=> 'Theme Settings',
+		'redirect' 		=> false
+	));
+
+    // add sub page
+	acf_add_options_sub_page(array(
+		'page_title' 	=> 'Header Settings',
+		'menu_title' 	=> 'Header',
+		'parent_slug' 	=> $parent['menu_slug'],
+	));
+	// add sub page
+	acf_add_options_sub_page(array(
+		'page_title' 	=> 'Footer Settings',
+		'menu_title' 	=> 'Footer',
+		'parent_slug' 	=> $parent['menu_slug'],
+	));
+}
+
+// ====================
+
+
+// =========
+
+// ===========================
+
+function wpa89819_wc_single_product(){
+
+    $product_cats = wp_get_post_terms( get_the_ID(), 'product_cat' );
+
+    if ( $product_cats && ! is_wp_error ( $product_cats ) ){
+
+        $single_cat = array_shift( $product_cats ); ?>
+
+        <span itemprop="name" class="product_category_title"><span><?php echo $single_cat->name; ?></span></span>
+
+<?php }
+}
+add_action( 'woocommerce_single_product_summary', 'wpa89819_wc_single_product', 2 );
+
+// ==============
+
+
+
+/**
+ * Show cart contents / total Ajax
+ */
+add_filter( 'woocommerce_add_to_cart_fragments', 'woocommerce_header_add_to_cart_fragment' );
+
+function woocommerce_header_add_to_cart_fragment( $fragments ) {
+	global $woocommerce;
+
+	ob_start();
+
+	?>
+	<a class="cart-customlocation" href="<?php echo esc_url(wc_get_cart_url()); ?>" title="<?php _e('View your shopping cart', 'woothemes'); ?>"><?php echo sprintf(_n('%d item', '%d items', $woocommerce->cart->cart_contents_count, 'woothemes'), $woocommerce->cart->cart_contents_count);?> – <?php echo $woocommerce->cart->get_cart_total(); ?></a>
+	<?php
+	$fragments['a.cart-customlocation'] = ob_get_clean();
+	return $fragments;
+}
+
+// adding fields to the single product page
+
+function add_acf_single() {
+	global $product; 
+	$current_product_id = $product->get_id();
+	$option_1 = get_field('options_1', $current_product_id);
+	$option_2 = get_field('options_2', $current_product_id);
+	$option_3 = get_field('options_3', $current_product_id);
+	$option_4 = get_field('options_4', $current_product_id);
+	$option_5 = get_field('options_5', $current_product_id);
+	?>
+	<!-- =============== -->
+    <div class="radio__buttons">
+    <h2><?php the_field('title'); ?></h2>
+    
+        <ul>
+            <li>
+                <input type="radio" id="option_1" name="selector" value="<?php echo $option_1; ?>">
+                <label for="option_1">
+					<?php echo $option_1; ?>
+                </label>
+                <div class="check"></div>
+            </li>
+			<li>
+                <input type="radio" id="option_2" name="selector" value="<?php echo $option_2; ?>">
+                <label for="option_2">
+					<?php echo $option_2; ?>
+                </label>
+                <div class="check"></div>
+            </li>
+			<li>
+                <input type="radio" id="option_3" name="selector" value="<?php echo $option_3; ?>">
+                <label for="option_3">
+					<?php echo $option_3; ?>
+                </label>
+                <div class="check"></div>
+            </li>
+			<li>
+                <input type="radio" id="option_4" name="selector" value="<?php echo $option_4; ?>">
+                <label for="option_4">
+					<?php echo $option_4; ?>
+                </label>
+                <div class="check"></div>
+            </li>
+			<li>
+                <input type="radio" id="option_5" name="selector" value="<?php echo $option_5; ?>">
+                <label for="option_5">
+					<?php echo $option_5; ?>
+                </label>
+                <div class="check"></div>
+            </li>
+        </ul>
+</div>
+<!-- ========== -->
+<?php
+}
+add_action('woocommerce_before_add_to_cart_button', 'add_acf_single', 30 );
+
+// validation on the quote selector radio button
+
+function tshirt_name_validation() { 
+    if ( empty( $_REQUEST['selector'] ) ) {
+        wc_add_notice( __( 'Please select a quote', 'woocommerce' ), 'error' );
+        return false;
+    }
+    return true;
+}
+add_action( 'woocommerce_add_to_cart_validation', 'tshirt_name_validation', 10, 3 );
+
+// adding data to cart object
+
+function save_selector_field( $cart_item_data, $product_id ) {
+    if( isset( $_REQUEST['selector'] ) ) {
+        $cart_item_data[ 'selector' ] = $_REQUEST['selector'];
+        /* below statement make sure every add to cart action as unique line item -- just incase */
+        $cart_item_data['unique_key'] = md5( microtime().rand() );
+    }
+    return $cart_item_data;
+}
+add_action( 'woocommerce_add_cart_item_data', 'save_selector_field', 10, 2 );
+
+// show data in cart and checkout
+
+function render_meta_on_cart_and_checkout( $cart_data, $cart_item = null ) {
+    $custom_items = array();
+    /* Woo 2.4.2 updates */
+    if( !empty( $cart_data ) ) {
+        $custom_items = $cart_data;
+    }
+    if( isset( $cart_item['selector'] ) ) {
+        $custom_items[] = array( "name" => 'Quote', "value" => $cart_item['selector'] );
+    }
+    return $custom_items;
+}
+add_filter( 'woocommerce_get_item_data', 'render_meta_on_cart_and_checkout', 10, 2 );
+
+// for order metas
+function selector_order_meta_handler( $item_id, $values, $cart_item_key ) {
+    if( isset( $values['selector'] ) ) {
+        wc_add_order_item_meta( $item_id, "selector", $values['selector'] );
+    }
+}
+add_action( 'woocommerce_add_order_item_meta', 'selector_order_meta_handler', 1, 3 );
+
+// =====================================
+// **Note**: This code is working only when you set Flat rate Settings
+// cost value is 1
+
+add_filter( 'woocommerce_package_rates', 'custom_package_rates', 10, 2 );
+ function custom_package_rates( $rates, $packages ) {
+    if ( is_admin() && ! defined( 'DOING_AJAX' ) ) return;
+    $cart_count = WC()->cart->get_cart_contents_count();
+    $cart_total =  WC()->cart->cart_contents_total;
+
+    foreach($rates as $rate_key => $rate_values ) {
+        $method_id = $rate_values->method_id;
+        $rate_id = $rate_values->id;
+
+        if( $method_id == 'flat_rate' ){
+            if( $cart_count < 5 ){
+                $flat_rate_value = 1.95; //"Applay Flat rate less then 5 quatity"
+            }
+            if(($cart_count >= 5) && ($cart_count <= 10)){
+                $flat_rate_value = 3.99; // "Applay Flat rate greater then from 5 to 10 quatity"
+            }
+            if($cart_count >= 11){
+                $flat_rate_value = 7.99; // "Applay Flat rate greater then 11 quatity"
+            }            
+            $rate_cost = $flat_rate_value ;
+            $rates[$rate_id]->cost =  $rates[$rate_id]->cost * $rate_cost;
+        }
+    }
+    return $rates;
+}
+
+/**
+ * Add "Print receipt" link to Order Received page and View Order page
+ */
+function isa_woo_thankyou() {
+    echo '<a href="javascript:window.print()" id="wc-print-button">Print receipt</a>';
+}
+add_action( 'woocommerce_thankyou', 'isa_woo_thankyou', 1);
+add_action( 'woocommerce_view_order', 'isa_woo_thankyou', 8 );
+
+// ==============add_text_under_product_image======================
+add_action( 'woocommerce_product_thumbnails', 'shoptimizer_custom_author_field', 3 );
+
+function shoptimizer_custom_author_field() { ?>
+
+<?php if(get_field('add_text_under_product_image')) { ?>
+	<div class="text_under_product_image"><?php the_field('add_text_under_product_image'); ?></div>
+<?php }
+}
+// ==============add_text_under_product_image======================
+
+
+
+
+
+
+
+
+
+// new page shortcode
+
+// Add Custom Data in WooCommerce Session
+
+add_filter('woocommerce_add_cart_item_data','wdm_add_item_data',1,2);
+ 
+if(!function_exists('wdm_add_item_data'))
+{
+    function wdm_add_item_data($cart_item_data,$product_id)
+    {
+        /*Here, We are adding item in WooCommerce session with, wdm_user_custom_data_value name*/
+        global $woocommerce;
+        session_start();    
+        if (isset($_SESSION['wdm_user_custom_data'])) {
+            $option = $_SESSION['wdm_user_custom_data'];       
+            $new_value = array('wdm_user_custom_data_value' => $option);
+        }
+        if(empty($option))
+            return $cart_item_data;
+        else
+        {    
+            if(empty($cart_item_data))
+                return $new_value;
+            else
+                return array_merge($cart_item_data,$new_value);
+        }
+        unset($_SESSION['wdm_user_custom_data']); 
+        //Unset our custom session variable, as it is no longer needed.
+    }
+}
+// Extract Custom Data from WooCommerce Session and Insert it into Cart Object
+
+add_filter('woocommerce_get_cart_item_from_session', 'wdm_get_cart_items_from_session', 1, 3 );
+if(!function_exists('wdm_get_cart_items_from_session'))
+{
+    function wdm_get_cart_items_from_session($item,$values,$key)
+    {
+        if (array_key_exists( 'wdm_user_custom_data_value', $values ) )
+        {
+        $item['wdm_user_custom_data_value'] = $values['wdm_user_custom_data_value'];
+        }       
+        return $item;
+    }
+}
+
+// Display User Custom Data on Cart and Checkout page
+
+add_filter('woocommerce_checkout_cart_item_quantity','wdm_add_user_custom_option_from_session_into_cart',1,3);  
+add_filter('woocommerce_cart_item_price','wdm_add_user_custom_option_from_session_into_cart',1,3);
+if(!function_exists('wdm_add_user_custom_option_from_session_into_cart'))
+{
+ function wdm_add_user_custom_option_from_session_into_cart($product_name, $values, $cart_item_key )
+    {
+        /*code to add custom data on Cart & checkout Page*/    
+        if(count($values['wdm_user_custom_data_value']) > 0)
+        {
+            $return_string = $product_name . "</a><dl class='variation'>";
+            $return_string .= "<table class='wdm_options_table' id='" . $values['product_id'] . "'>";
+            $return_string .= "<tr><td>" . $values['wdm_user_custom_data_value'] . "</td></tr>";
+            $return_string .= "</table></dl>"; 
+            return $return_string;
+        }
+        else
+        {
+            return $product_name;
+        }
+    }
+}
+
+// Add Custom Data as Metadata to the Order Items
+
+add_action('woocommerce_add_order_item_meta','wdm_add_values_to_order_item_meta',1,2);
+if(!function_exists('wdm_add_values_to_order_item_meta'))
+{
+  function wdm_add_values_to_order_item_meta($item_id, $values)
+  {
+        global $woocommerce,$wpdb;
+        $user_custom_values = $values['wdm_user_custom_data_value'];
+        if(!empty($user_custom_values))
+        {
+            wc_add_order_item_meta($item_id,'wdm_user_custom_data',$user_custom_values);  
+        }
+  }
+}
+
+// Remove User Custom Data, if Product is Removed from Cart
+
+add_action('woocommerce_before_cart_item_quantity_zero','wdm_remove_user_custom_data_options_from_cart',1,1);
+if(!function_exists('wdm_remove_user_custom_data_options_from_cart'))
+{
+    function wdm_remove_user_custom_data_options_from_cart($cart_item_key)
+    {
+        global $woocommerce;
+        // Get cart
+        $cart = $woocommerce->cart->get_cart();
+        // For each item in cart, if item is upsell of deleted product, delete it
+        foreach( $cart as $key => $values)
+        {
+        if ( $values['wdm_user_custom_data_value'] == $cart_item_key )
+            unset( $woocommerce->cart->cart_contents[ $key ] );
+        }
+    }
+}
+
+
+
+
+function show_products (){
+
+$args = array(
+    'post_type'             => 'product',
+    'post_status'           => 'publish',
+    'posts_per_page'        => -1,
+    
+);
+
+ $args['tax_query'] = array( 'relation'=> 'AND' );    
+ array_push($args['tax_query'] , array(
+            'taxonomy' => 'product_cat',
+            'field'    => 'slug',
+            'terms'    => 'corporate-sales',
+            ));
+    array_push($args['tax_query'] , array(
+            'taxonomy' => 'product_cat',
+            'field'    => 'slug',
+            'terms'    => 'mens',
+        ));
+
+
+$query = new WP_Query($args);
+
+?>
+<div class="main_carousel_sec" >
+<div class="mens_carousel_cont" >
+    <h3> Mens Shop</h3>
+    <div class="mens_carousel" id="menCarousel" >
+        <?php
+        while ( $query->have_posts() ) {
+            $query->the_post();
+            
+            global $product;
+
+            ?>
+            <div class="pro_box">
+                <div class="img_box">
+                    <img src="<?php echo wp_get_attachment_image_src( get_post_thumbnail_id( get_the_ID() ), 'large' )[0]; ?>">
+                </div>
+                <div class="pro_info">
+                    <h4> <?php echo get_the_title(); ?> </h4>
+                    <div class="product_veriations"> 
+                    <?php 
+                           if ( $product->get_type() == 'variable' ) {
+                              //loop through each variation
+                            
+                              foreach ( $product->get_available_variations() as $variation ) {
+                                //lets store the attributes so users will know it
+                                $attributes = array();
+                                foreach ( $variation['attributes'] as $attribute ) {
+                                  //write each individual attribute (e.g. brown, plastic||green, metal)
+                                  $attributes[] = $attribute;
+                                }
+                            
+                            //combine all attributes in a string
+                            $attributes = implode( ', ', $attributes );
+                            
+                            //check if product is in stock
+                                if ( $variation['max_qty'] > 0 || ! empty ( $variation['is_in_stock'] ) ) { 
+                                  //display stock count if any
+                                 ?>
+                                  <label> <input type="radio" name="veriations" value="<?php echo $variation['variation_id']; ?>"> 
+                                  <?php echo $attributes; ?> </label> 
+                            <?php
+                                } 
+                              }
+                            }
+                    
+                    
+                    ?>
+                    </div>
+                    <div class='buttons_wrap'>
+                    <input type="number" class="custom_quantity_<?php echo get_the_ID(); ?>" name="custom_quantity" >
+                    <button type="button"  class="add_to_cart_btn" data-pid="<?php echo get_the_ID(); ?>">add to cart</button>
+                    </div>
+                </div>
+                
+            </div>
+             <?php      
+                }   
+            ?>
+            
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" ></script>
+<script>
+// var jQuery = '$';
+
+jQuery(document).ready(function(){
+
+    jQuery(".add_to_cart_btn").on("click",function(e){
+        e.preventDefault();
+
+        let $thisbutton = $(this);
+        let product_id = $thisbutton.data('pid');
+        let variation_id = $thisbutton.parents('.pro_info').find("input[type=radio]:checked").val(); 
+        let product_qty = jQuery(".custom_quantity_"+product_id).val(); 
+        
+        
+        
+        var data = {
+            action: 'woocommerce_ajax_add_to_cart',
+            product_id: product_id,
+            product_sku: '',
+            quantity: product_qty,
+            variation_id: variation_id,
+        };
+
+        // $(document.body).trigger('adding_to_cart', [$thisbutton, data]);
+
+        $.ajax({
+            type: 'post',
+            url: wc_cart_fragments_params.ajax_url,
+            data: data,
+            // beforeSend: function (response) {
+            //     $thisbutton.removeClass('added').addClass('loading');
+            // },
+            // complete: function (response) {
+            //     $thisbutton.addClass('added').removeClass('loading');
+            // },
+            success: function (response) {
+                if (response.error && response.product_url) {
+                    window.location = response.product_url;
+                    return;
+                } else {
+            $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash,''])
+                }
+            },
+        });
+
+        return false;
+        
+        
+        
+        
+    });
+    
+    // function addToCartMethod( verid, quantity){
+      
+       
+       
+       
+        
+    //     // jQuery.ajax('https://demo.hashe.com/4udesign1/?add-to-cart='+verid+'&quantity='+quantity, function() {
+   
+    //     // });
+        
+    // }
+    
+    
+});
+</script>
+
+
+<?php
+
+}
+add_shortcode("show_products","show_products");
+
+
+
+add_action('wp_ajax_woocommerce_ajax_add_to_cart', 'woocommerce_ajax_add_to_cart');
+add_action('wp_ajax_nopriv_woocommerce_ajax_add_to_cart', 'woocommerce_ajax_add_to_cart');
+        
+function woocommerce_ajax_add_to_cart() {
+
+            $product_id = apply_filters('woocommerce_add_to_cart_product_id', absint($_POST['product_id']));
+            $quantity = empty($_POST['quantity']) ? 1 : wc_stock_amount($_POST['quantity']);
+            $variation_id = absint($_POST['variation_id']);
+            $passed_validation = apply_filters('woocommerce_add_to_cart_validation', true, $product_id, $quantity);
+            $product_status = get_post_status($product_id);
+
+            if ( WC()->cart->add_to_cart($product_id, $quantity, $variation_id) && 'publish' === $product_status) {
+
+                do_action('woocommerce_ajax_added_to_cart', $product_id);
+
+                if ('yes' === get_option('woocommerce_cart_redirect_after_add')) {
+                    wc_add_to_cart_message(array($product_id => $quantity), true);
+                }
+
+                  
+                
+            } else {
+
+                $data = array(
+                    'error' => true,
+                    'product_url' => apply_filters('woocommerce_cart_redirect_after_error', get_permalink($product_id), $product_id));
+
+                echo wp_send_json($data);
+            }
+            
+            
+            $user_custom_data_values =  $_POST['user_data']; //This is User custom value sent via AJAX
+      session_start();
+      $_SESSION['wdm_user_custom_data'] = $user_custom_data_values;
+            
+            
+            
+WC_AJAX :: get_refreshed_fragments();
+            die();
+        }
+
+
+
