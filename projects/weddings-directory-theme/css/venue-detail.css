@@ -1,0 +1,220 @@
+h1, h2, h3, h4, h5, h6{
+    font-family: poppins;
+}
+p{
+    font-family: poppins;
+    color: #5A6A94;
+}
+.first-row{
+    background:url(assets/bg.png);
+    padding: 33px 0;
+}
+.f-img{
+    width: 425px;
+}
+.second-row{
+    margin: 50px 0;
+}
+.second-row-2{
+    margin: -26px 0 20px 0;
+    border-bottom: 1px solid #3A4664;
+    padding-bottom: 25px ;
+}
+.s-row-head{
+    font-size: 40px;
+    color: #3A4664;
+}
+.s-row-inner-2{
+    display: inline-block;
+}
+.s-row-2-head{
+    font-size: 16px;
+}
+.s-row-inner-3 button{
+    width: 360px;
+    height: 60px;
+    background:#D06C6E;
+    color:#fff ;
+    border: 0px;
+    border-radius: 50px;
+    margin-left: 10px;
+}
+.about-this-ven-sec, .video-sec, .get-in-sec{
+    border-bottom: 1px solid #DFE5F6;
+    padding-bottom: 50px ;
+}
+.about-ven{
+    margin-top: 100px;
+}
+.about-ven-head{
+    font-size:40px ;
+    color: #3A4664;
+    margin: 20px 0 20px 0;
+}
+.get-in-touch{
+    font-size: 24px;
+    color: #D06C6E;
+}
+.get-in-touch
+{
+    margin: 25px 0;
+}
+.send-enq{
+    font-size: 14px;
+    width: 260px;
+    height: 60px;
+    background:#D06C6E;
+    color:#fff ;
+    border: 0px;
+    border-radius: 50px;
+    font-weight: 500;
+    text-align: center;
+    margin: 20px 55px;
+}
+i.fab {
+    background: #d06c6e !important;
+    color: #fff !important;
+    padding: 10px !important;
+    border-radius: 50% !important;
+}
+.s-icon {
+    display: flex;
+    justify-content: center !important;
+    margin-top: 20px;
+}
+.s-icon i {
+    margin-left: 10px !important;
+}
+.about-ven-col{
+    position: relative;
+}
+.about-ven-col::before {
+    content: "";
+    position: absolute;
+    width: 1px;
+    height: 524px;
+    background: #DFE5F6;
+    top: 29px !IMPORTANT;
+    left: -5px !important;
+}
+.about-ven{
+    font-size: 14px;
+    font-weight: 500;
+    color: #3A4664;
+}
+.visit-web{
+    text-align: center;
+    font-size: 14px;
+    line-height: 30px;
+    margin-top: 30px;
+}
+img.img-video {
+    margin: 50px 135px;
+}
+@media screen and (max-width:500px) {
+    .img-video, .find-venues
+    {
+        display: none;
+    }
+}
+.send-in{
+    width: 360px;
+    height: 60px;
+    background:#D06C6E;
+    color:#fff ;
+    border: 0px;
+    border-radius: 50px;
+  
+}
+.con-sec{
+    background-image: url(assets/bar.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.con-head{
+    font-size: 30px;
+    line-height: 40px;
+    color: #fff;
+    margin-top: 75px;
+}
+.con-p
+{
+    color: #fff;
+}
+.con-btn{
+    width: 260px;
+    height: 60px;
+    background:#fff;
+    color:#D06C6E;
+    border-radius: 50px;
+    border: 0px;
+}
+.col-md-3.s-row-inner-4,.col-md-3.s-row-inner-5{
+    text-align: right;
+}
+.video-row{
+    margin-top: 50px;
+}
+.video-p{
+    margin-top: 20px;
+}
+.video-head{
+    margin-top: 10px;
+    color: #3A4664;
+}
+.get-in-head, .get-in-img, .get-sub-head{
+    margin-top: 25px;
+    color: #3A4664;
+    margin-left: -25px;
+}
+.get-in-p{
+    margin-top: 26px;
+    margin-left: -12px;
+}
+.venu-you-may-img{
+    margin-top: 30px;
+}
+.venu-you-may-head, .venu-you-may-sub-head{
+    margin-bottom: 20px;
+}
+.vendor-carousel-sec{
+    margin-top: -80px !important;
+}
+.card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 15px !important;
+}
+.card-img {
+    width: 100% !important;
+}
+.card-body {
+    padding: 0 !important;
+}
+.card-title {
+    padding: 18px 0px 1px 15px;
+}
+.card-text {
+    padding: 18px 0px 25px 15px;
+}
+.find-venues{
+    width: 360px;
+    height: 60px;
+    background:#D06C6E;
+    color:#fff ;
+    border: 0px;
+    border-radius: 50px;
+    margin: 0 422px;
+}
+.my-3 {
+    margin-top: -40px !important;
+}
